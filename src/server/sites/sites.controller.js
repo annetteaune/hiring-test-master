@@ -1,12 +1,11 @@
-import {sites} from './sites.db';
+import { sites } from "./sites.db";
 
 // this is our global "db"
 let sitesList = sites.slice();
 
 export default class EmployeesController {
-  constructor() {
-
-  };
+  //same as oil rig - todo look into if intentional? possible reusability?
+  constructor() {}
 
   getSites = (req, res) => {
     res.json(sitesList);
@@ -15,4 +14,4 @@ export default class EmployeesController {
   addSite = (req, res) => {
     // TODO: Add to employee
   };
-};
+}

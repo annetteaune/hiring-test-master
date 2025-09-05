@@ -1,12 +1,11 @@
-import {oilRigs} from './oil-rigs.db';
+import { oilRigs } from "./oil-rigs.db";
 
 // this is our global "db"
 let oilRigsList = oilRigs.slice();
 
 export default class EmployeesController {
-  constructor() {
-
-  };
+  //strange name choice, intentional or error? todo
+  constructor() {}
 
   getOilRigs = (req, res) => {
     res.json(oilRigsList);
@@ -15,4 +14,4 @@ export default class EmployeesController {
   addOilRig = (req, res) => {
     // TODO: Add to employee
   };
-};
+}
