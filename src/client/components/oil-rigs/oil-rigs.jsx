@@ -1,59 +1,119 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {Button, Card, Heading, Column, Row} from '@oliasoft-open-source/react-ui-library';
-import {oilRigsLoaded} from "store/entities/oil-rigs/oil-rigs";
-import styles from './oil-rigs.module.less';
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import {
+  Button,
+  Card,
+  Heading,
+  Column,
+  Row,
+  Spacer,
+  List,
+  Accordion,
+} from "@oliasoft-open-source/react-ui-library";
+import { oilRigsLoaded } from "store/entities/oil-rigs/oil-rigs";
+import styles from "./oil-rigs.module.less";
 
-const OilRigs = ({list, loading, oilRigsLoaded}) => {
+const OilRigs = ({
+  list,
+  loading,
+  oilRigsLoaded,
+  variant = "full",
+  siteRigIds,
+}) => {
+  console.log("rigs: ", list);
+
+  const filteredRigs = siteRigIds
+    ? list.filter((rig) => siteRigIds.includes(rig.id))
+    : list;
+
+  useEffect(() => {
+    if (list.length === 0 && !loading) {
+      oilRigsLoaded();
+    }
+  });
+
+  // todo redux
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
+  };
+
   return (
-    <Card
-      heading={
-        <Heading>List of oil rigs</Heading>
-      }
-    >
-      <Row>
-        <Column width={200}>
-          <Button
-            label="Load oil rigs"
-            onClick={oilRigsLoaded}
-            loading={loading}
-            disabled={loading}
-          />
-        </Column>
-        <Column>
-          <div className={styles.oilRigsList}>
-            {list.length ? (
-              <ul>
-                {list.map((oilRig, i) => (
-                  <li key={i}>
-                    {oilRig.id}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <em>None loaded</em>
-            )}
-          </div>
-        </Column>
-      </Row>
-    </Card>
+    <>
+      {variant === "compact" ? (
+        <>
+          <article>
+            <Accordion
+              expanded={expanded}
+              heading={
+                <Heading
+                  onClick={function Xs(expanded) {
+                    toggleExpanded();
+                  }}
+                >
+                  Connected Oil Rigs
+                </Heading>
+              }
+            >
+              {filteredRigs.length ? (
+                <List
+                  list={{
+                    items: filteredRigs.map((oilRig, i) => ({
+                      id: i,
+                      name: oilRig.name,
+                    })),
+                  }}
+                  noHeader
+                  scrollDetails={{
+                    scrollable: true,
+                  }}
+                />
+              ) : (
+                <em>None loaded</em>
+              )}
+            </Accordion>
+          </article>
+        </>
+      ) : (
+        <Card heading={<Heading>List of oil rigs</Heading>}>
+          <Row>
+            <Column>
+              <article>
+                {/*todo - implement list w/details: https://oliasoft-open-source.gitlab.io/react-ui-library/storybook/?path=/docs/basic-list--docs */}
+                {filteredRigs.length ? (
+                  <ul>
+                    {filteredRigs.map((oilRig, i) => (
+                      <li key={i}>
+                        <span>{oilRig.name}</span> <span> - </span>
+                        <span>{oilRig.manufacturer}</span>
+                        <Spacer />
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <em>None loaded</em>
+                )}
+              </article>
+            </Column>
+          </Row>
+        </Card>
+      )}
+    </>
   );
-}
+};
 
-const mapStateToProps = ({entities}) => {
-  const {oilRigs} = entities;
+const mapStateToProps = ({ entities }) => {
+  const { oilRigs } = entities;
   return {
     loading: oilRigs.loading,
-    list: oilRigs.list
-  }
+    list: oilRigs.list,
+  };
 };
 
 const mapDispatchToProps = {
   oilRigsLoaded,
 };
 
-const ConnectedOilRigs = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(OilRigs);
-export {ConnectedOilRigs as OilRigs};
+const ConnectedOilRigs = connect(mapStateToProps, mapDispatchToProps)(OilRigs);
+export { ConnectedOilRigs as OilRigs };

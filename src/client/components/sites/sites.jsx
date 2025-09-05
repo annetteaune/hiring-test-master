@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import {
   Button,
@@ -6,10 +6,13 @@ import {
   Heading,
   Column,
   Row,
+  Flex,
+  List,
 } from "@oliasoft-open-source/react-ui-library";
 import { sitesLoaded } from "store/entities/sites/sites";
 import styles from "./sites.module.less";
 import { useNavigate } from "react-router-dom";
+import { OilRigs } from "../oil-rigs/oil-rigs";
 
 const Sites = ({ list, loading, sitesLoaded }) => {
   const navigate = useNavigate();
@@ -19,35 +22,50 @@ const Sites = ({ list, loading, sitesLoaded }) => {
     navigate(`/site/${siteId}`);
   };
 
+  console.log("list ", list);
+  useEffect(() => {
+    if (list.length === 0 && !loading) {
+      sitesLoaded();
+    }
+  });
+
   return (
     <Card heading={<Heading>List of oil sites</Heading>}>
       <Row>
-        <Column width={200}>
-          <Button
-            label="Load sites"
-            onClick={sitesLoaded}
-            loading={loading}
-            disabled={loading}
-          />
-        </Column>
-        <Column>
-          <div className={styles.sitesList}>
-            {list.length ? (
-              <ul>
+        <div className={styles.sitesList}>
+          {list.length ? (
+            <ul>
+              <Flex gap="var(--padding)" justifyContent="space-evenly">
                 {list.map((site, i) => (
                   <li key={i}>
-                    <Button
-                      label={site.name}
-                      onClick={() => handleDetailsClick(site.id)}
-                    />
+                    <Card
+                      bordered
+                      padding="true"
+                      heading={
+                        <Heading>
+                          {site.name} - {site.country}
+                        </Heading>
+                      }
+                    >
+                      <section className={styles.cardContent}>
+                        <OilRigs variant="compact" siteRigIds={site.oilRigs} />
+                      </section>
+                      <section className={styles.btnContainer}>
+                        <Button
+                          label="See details"
+                          onClick={() => handleDetailsClick(site.id)}
+                        />
+                      </section>
+                    </Card>
                   </li>
                 ))}
-              </ul>
-            ) : (
-              <em>None loaded</em>
-            )}
-          </div>
-        </Column>
+                *
+              </Flex>
+            </ul>
+          ) : (
+            <em>None loaded</em>
+          )}
+        </div>
       </Row>
     </Card>
   );

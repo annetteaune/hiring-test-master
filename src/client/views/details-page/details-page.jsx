@@ -34,14 +34,15 @@ export const DetailsPage = ({}) => {
   return (
     <Page left={0}>
       <Heading top>Details - {currentSite.name} </Heading>
+      <section>
+        <h2>{currentSite.name}</h2>
+
+        <p>{currentSite.country}</p>
+      </section>
       <Flex>
         <Button label="Back to site view" onClick={handleBackClick} />
       </Flex>
-      <OilRigs />
-      <section>
-        <h2>{currentSite.name}</h2>
-        <p>{currentSite.country}</p>
-      </section>
+      <OilRigs siteRigIds={currentSite.oilRigs} />
     </Page>
   );
 };
