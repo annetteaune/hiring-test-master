@@ -105,52 +105,59 @@ const OilRigs = ({
           </article>
         </>
       ) : (
-        <Card heading={<Heading>List of oil rigs</Heading>}>
-          <div className={styles.sortBtnContainer}>
-            <Button
-              label={<Icon icon="sort ascending" />}
-              onClick={() => setRigsSortOrder("asc")}
-            />
-            <Button
-              label={<Icon icon="sort descending" />}
-              onClick={() => setRigsSortOrder("desc")}
-            />
-            <Button
-              label={<Icon icon="undo" />}
-              onClick={() => setRigsSortOrder("none")}
-            />
-          </div>
-          <Row>
-            <Column>
-              <article>
-                {/*todo - implement list w/details: https://oliasoft-open-source.gitlab.io/react-ui-library/storybook/?path=/docs/basic-list--docs */}
-                {loading ? (
-                  <Loader
-                    height="100%"
-                    testId="story-default-spinner"
-                    text="Loading..."
-                    theme="white"
-                    width="100%"
-                  >
-                    <Spinner dark />
-                  </Loader>
-                ) : sortedList.length ? (
-                  <ul>
-                    {sortedList.map((oilRig, i) => (
-                      <li key={i}>
-                        <span>Name: {oilRig.name}</span>
-                        <span>Manufacturer: {oilRig.manufacturer}</span>
-                        <Divider />
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <em>None loaded</em>
-                )}
-              </article>
-            </Column>
-          </Row>
-        </Card>
+        <div className={styles.listContainer}>
+          <Card heading={<Heading>List of oil rigs</Heading>}>
+            <Row>
+              <Column>
+                {" "}
+                <div className={styles.sortBtnContainer}>
+                  <Button
+                    label={<Icon icon="sort ascending" />}
+                    onClick={() => setRigsSortOrder("asc")}
+                  />
+                  <Button
+                    label={<Icon icon="sort descending" />}
+                    onClick={() => setRigsSortOrder("desc")}
+                  />
+                  <Button
+                    label={<Icon icon="undo" />}
+                    onClick={() => setRigsSortOrder("none")}
+                  />
+                </div>
+                <article>
+                  {loading ? (
+                    <Loader
+                      height="100%"
+                      testId="story-default-spinner"
+                      text="Loading..."
+                      theme="white"
+                      width="100%"
+                    >
+                      <Spinner dark />
+                    </Loader>
+                  ) : sortedList.length ? (
+                    <List
+                      list={{
+                        items: sortedList.map((oilRig, index) => ({
+                          id: oilRig.id,
+                          name: oilRig.name,
+                          details: oilRig.manufacturer,
+                          metadata: `Rig ID: ${oilRig.id}`,
+                          testId: `oil-rig-item-${oilRig.id}`,
+                        })),
+                      }}
+                      noHeader
+                    />
+                  ) : (
+                    <em>
+                      <Icon icon="error" /> No data avaliable
+                    </em>
+                  )}
+                </article>
+              </Column>
+            </Row>
+          </Card>
+        </div>
       )}
     </>
   );

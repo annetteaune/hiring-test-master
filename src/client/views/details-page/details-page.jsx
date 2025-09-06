@@ -12,6 +12,7 @@ import { OilRigs } from "client/components/oil-rigs/oil-rigs";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { sitesLoaded } from "src/client/store/entities/sites/sites";
+import styles from "./details-page.module.less";
 
 export const DetailsPage = ({}) => {
   const { id } = useParams();
@@ -48,16 +49,17 @@ export const DetailsPage = ({}) => {
   }
   return (
     <Page left={0}>
-      <Heading top>Details - {currentSite.name} </Heading>
-      <section>
-        <h2>{currentSite.name}</h2>
-
-        <p>{currentSite.country}</p>
-      </section>
-      <Flex>
+      <Heading top>Details - {currentSite.name} </Heading>{" "}
+      <div className={styles.pageContainer}>
+        <section className={styles.infoContainer}>
+          <h2>{currentSite.name}</h2>
+          <p>{currentSite.country}</p>
+        </section>
         <Button label="Back to site view" onClick={handleBackClick} />
-      </Flex>
+      </div>
       <OilRigs siteRigIds={currentSite.oilRigs} />
     </Page>
   );
 };
+
+// todo legg til breadcrumb, inkluder back-btn der?
