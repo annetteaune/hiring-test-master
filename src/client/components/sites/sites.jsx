@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import {
   Button,
@@ -8,13 +8,20 @@ import {
   Row,
   Flex,
   List,
+  Icon,
 } from "@oliasoft-open-source/react-ui-library";
-import { sitesLoaded } from "store/entities/sites/sites";
+import { setSitesSortOrder, sitesLoaded } from "store/entities/sites/sites";
 import styles from "./sites.module.less";
 import { useNavigate } from "react-router-dom";
 import { OilRigs } from "../oil-rigs/oil-rigs";
 
-const Sites = ({ list, loading, sitesLoaded }) => {
+const Sites = ({
+  list,
+  loading,
+  sitesLoaded,
+  sortOrder,
+  setSitesSortOrder,
+}) => {
   const navigate = useNavigate();
 
   // navigate to details page based on id
@@ -29,14 +36,42 @@ const Sites = ({ list, loading, sitesLoaded }) => {
     }
   });
 
+  const sortedList = useMemo(() => {
+    if (sortOrder === "asc") {
+      return [...list].sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if (sortOrder === "desc") {
+      return [...list].sort((a, b) => b.name.localeCompare(a.name));
+    }
+    return list;
+  }, [list, sortOrder]);
+
   return (
     <Card heading={<Heading>List of oil sites</Heading>}>
       <Row>
         <div className={styles.sitesList}>
+          <div className={styles.sortBtnContainer}>
+            <Button
+              label={<Icon icon="sort ascending" />}
+              onClick={() => setSitesSortOrder("asc")}
+            />
+            <Button
+              label={<Icon icon="sort descending" />}
+              onClick={() => setSitesSortOrder("desc")}
+            />
+            <Button
+              label={<Icon icon="undo" />}
+              onClick={() => setSitesSortOrder("none")}
+            />
+          </div>
           {list.length ? (
             <ul>
-              <Flex gap="var(--padding)" justifyContent="space-evenly">
-                {list.map((site, i) => (
+              <Flex
+                gap="var(--padding)"
+                justifyContent="space-evenly"
+                direction="column"
+              >
+                {sortedList.map((site, i) => (
                   <li key={i}>
                     <Card
                       bordered
@@ -59,7 +94,6 @@ const Sites = ({ list, loading, sitesLoaded }) => {
                     </Card>
                   </li>
                 ))}
-                *
               </Flex>
             </ul>
           ) : (
@@ -76,11 +110,13 @@ const mapStateToProps = ({ entities }) => {
   return {
     loading: sites.loading,
     list: sites.list,
+    sortOrder: sites.sortOrder,
   };
 };
 
 const mapDispatchToProps = {
   sitesLoaded,
+  setSitesSortOrder,
 };
 
 const ConnectedSites = connect(mapStateToProps, mapDispatchToProps)(Sites);

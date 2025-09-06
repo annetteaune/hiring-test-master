@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import {
   Button,
@@ -9,8 +9,14 @@ import {
   Spacer,
   List,
   Accordion,
+  Icon,
+  Divider,
 } from "@oliasoft-open-source/react-ui-library";
-import { oilRigsLoaded } from "store/entities/oil-rigs/oil-rigs";
+import {
+  oilRigsLoaded,
+  setRigsExpanded,
+  setRigsSortOrder,
+} from "store/entities/oil-rigs/oil-rigs";
 import styles from "./oil-rigs.module.less";
 
 const OilRigs = ({
@@ -19,6 +25,10 @@ const OilRigs = ({
   oilRigsLoaded,
   variant = "full",
   siteRigIds,
+  expanded,
+  setRigsExpanded,
+  sortOrder,
+  setRigsSortOrder,
 }) => {
   console.log("rigs: ", list);
 
@@ -32,12 +42,19 @@ const OilRigs = ({
     }
   });
 
-  // todo redux
-  const [expanded, setExpanded] = useState(false);
-
   const toggleExpanded = () => {
-    setExpanded(!expanded);
+    setRigsExpanded(!expanded);
   };
+
+  const sortedList = useMemo(() => {
+    if (sortOrder === "asc") {
+      return [...filteredRigs].sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if (sortOrder === "desc") {
+      return [...filteredRigs].sort((a, b) => b.name.localeCompare(a.name));
+    }
+    return filteredRigs;
+  }, [filteredRigs, sortOrder]);
 
   return (
     <>
@@ -77,17 +94,31 @@ const OilRigs = ({
         </>
       ) : (
         <Card heading={<Heading>List of oil rigs</Heading>}>
+          <div className={styles.sortBtnContainer}>
+            <Button
+              label={<Icon icon="sort ascending" />}
+              onClick={() => setRigsSortOrder("asc")}
+            />
+            <Button
+              label={<Icon icon="sort descending" />}
+              onClick={() => setRigsSortOrder("desc")}
+            />
+            <Button
+              label={<Icon icon="undo" />}
+              onClick={() => setRigsSortOrder("none")}
+            />
+          </div>
           <Row>
             <Column>
               <article>
                 {/*todo - implement list w/details: https://oliasoft-open-source.gitlab.io/react-ui-library/storybook/?path=/docs/basic-list--docs */}
-                {filteredRigs.length ? (
+                {sortedList.length ? (
                   <ul>
-                    {filteredRigs.map((oilRig, i) => (
+                    {sortedList.map((oilRig, i) => (
                       <li key={i}>
-                        <span>{oilRig.name}</span> <span> - </span>
-                        <span>{oilRig.manufacturer}</span>
-                        <Spacer />
+                        <span>Name: {oilRig.name}</span>
+                        <span>Manufacturer: {oilRig.manufacturer}</span>
+                        <Divider />
                       </li>
                     ))}
                   </ul>
@@ -103,16 +134,22 @@ const OilRigs = ({
   );
 };
 
+//gir tilgang til verdien i sortOrder
 const mapStateToProps = ({ entities }) => {
   const { oilRigs } = entities;
   return {
     loading: oilRigs.loading,
     list: oilRigs.list,
+    expanded: oilRigs.expanded,
+    sortOrder: oilRigs.sortOrder,
   };
 };
 
+//gir tilgang til action
 const mapDispatchToProps = {
   oilRigsLoaded,
+  setRigsExpanded,
+  setRigsSortOrder,
 };
 
 const ConnectedOilRigs = connect(mapStateToProps, mapDispatchToProps)(OilRigs);
