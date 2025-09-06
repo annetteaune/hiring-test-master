@@ -11,6 +11,8 @@ import {
   Accordion,
   Icon,
   Divider,
+  Loader,
+  Spinner,
 } from "@oliasoft-open-source/react-ui-library";
 import {
   oilRigsLoaded,
@@ -73,7 +75,17 @@ const OilRigs = ({
                 </Heading>
               }
             >
-              {filteredRigs.length ? (
+              {loading ? (
+                <Loader
+                  height="100%"
+                  testId="story-default-spinner"
+                  text="Loading..."
+                  theme="white"
+                  width="100%"
+                >
+                  <Spinner dark />
+                </Loader>
+              ) : filteredRigs.length ? (
                 <List
                   list={{
                     items: filteredRigs.map((oilRig, i) => ({
@@ -112,7 +124,17 @@ const OilRigs = ({
             <Column>
               <article>
                 {/*todo - implement list w/details: https://oliasoft-open-source.gitlab.io/react-ui-library/storybook/?path=/docs/basic-list--docs */}
-                {sortedList.length ? (
+                {loading ? (
+                  <Loader
+                    height="100%"
+                    testId="story-default-spinner"
+                    text="Loading..."
+                    theme="white"
+                    width="100%"
+                  >
+                    <Spinner dark />
+                  </Loader>
+                ) : sortedList.length ? (
                   <ul>
                     {sortedList.map((oilRig, i) => (
                       <li key={i}>

@@ -9,6 +9,8 @@ import {
   Flex,
   List,
   Icon,
+  Loader,
+  Spinner,
 } from "@oliasoft-open-source/react-ui-library";
 import { setSitesSortOrder, sitesLoaded } from "store/entities/sites/sites";
 import styles from "./sites.module.less";
@@ -64,7 +66,17 @@ const Sites = ({
               onClick={() => setSitesSortOrder("none")}
             />
           </div>
-          {list.length ? (
+          {loading ? (
+            <Loader
+              height="100%"
+              testId="story-default-spinner"
+              text="Loading..."
+              theme="white"
+              width="100%"
+            >
+              <Spinner dark />
+            </Loader>
+          ) : list.length ? (
             <ul>
               <Flex
                 gap="var(--padding)"
@@ -97,7 +109,9 @@ const Sites = ({
               </Flex>
             </ul>
           ) : (
-            <em>None loaded</em>
+            <em>
+              <Icon icon="error" /> No data avaliable
+            </em>
           )}
         </div>
       </Row>
