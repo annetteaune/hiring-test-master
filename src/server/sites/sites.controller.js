@@ -64,8 +64,48 @@ export default class EmployeesController {
   };
 
   //Update
-  updateSite = () => {
-    //todo
+  updateSite = (req, res) => {
+    const { id } = req.params;
+    const { name, country, oilRigs } = req.body;
+
+    const siteToUpdate = sitesList.find((site) => site.id === id);
+
+    if (!siteToUpdate) {
+      return res.status(404).json({ error: "Site not found" });
+    }
+
+    if (name !== undefined && name.trim().length === 0) {
+      return res.status(400).json({ error: "Name cannot be empty" });
+    }
+
+    if (country !== undefined && country.trim().length === 0) {
+      return res.status(400).json({ error: "Country cannot be empty" });
+    }
+
+    if (name && name.trim().toLowerCase() !== siteToUpdate.name.toLowerCase()) {
+      const checkIfExists = sitesList.find(
+        (site) =>
+          site.id !== id && site.name.toLowerCase() === name.toLowerCase()
+      );
+      if (checkIfExists) {
+        return res.status(409).json({ error: "Name already exists" });
+      }
+    }
+
+    let updatedSite;
+    sitesList = sitesList.map((site) => {
+      if (site.id === id) {
+        updatedSite = {
+          ...site,
+          ...(name ? { name: name.trim() } : {}),
+          ...(country ? { country: country.trim() } : {}),
+          ...(oilRigs ? { oilRigs } : {}),
+        };
+        return updatedSite;
+      }
+      return site;
+    });
+    res.status(200).json({ message: "Updated successfully" });
   };
 
   //Delete

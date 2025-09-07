@@ -74,8 +74,46 @@ export default class EmployeesController {
   };
 
   //Updtae
-  updateOilRig = () => {
-    //todo
+  updateOilRig = (req, res) => {
+    const { id } = req.params;
+    const { name, manufacturer } = req.body;
+
+    const rigToUpdate = oilRigsList.find((rig) => rig.id === id);
+
+    if (!rigToUpdate) {
+      return res.status(404).json({ error: "Oil rig not found" });
+    }
+
+    if (name !== undefined && name.trim().length === 0) {
+      return res.status(400).json({ error: "Name cannot be empty" });
+    }
+
+    if (manufacturer !== undefined && manufacturer.trim().length === 0) {
+      return res.status(400).json({ error: "Manufacturer cannot be empty" });
+    }
+
+    if (name && name.trim().toLowerCase() !== rigToUpdate.name.toLowerCase()) {
+      const checkIfExists = oilRigsList.find(
+        (rig) => rig.id !== id && rig.name.toLowerCase() === name.toLowerCase()
+      );
+      if (checkIfExists) {
+        return res.status(409).json({ error: "Name already exists" });
+      }
+    }
+
+    let updatedRig;
+    oilRigsList = oilRigsList.map((rig) => {
+      if (rig.id === id) {
+        updatedRig = {
+          ...rig,
+          ...(name ? { name: name.trim() } : {}),
+          ...(manufacturer ? { manufacturer: manufacturer.trim() } : {}),
+        };
+        return updatedRig;
+      }
+      return rig;
+    });
+    res.status(200).json({ message: "Updated successfully" });
   };
 
   //Delete
