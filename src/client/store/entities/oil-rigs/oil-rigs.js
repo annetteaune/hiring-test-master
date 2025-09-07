@@ -6,7 +6,6 @@ const slice = createSlice({
   initialState: {
     loading: false,
     list: [],
-    expanded: false,
     sortOrder: "none",
   },
   reducers: {
@@ -20,9 +19,6 @@ const slice = createSlice({
     oilRigsRequestFailed: (oilRigs) => {
       oilRigs.loading = false;
     },
-    setRigsExpanded: (oilRigs, action) => {
-      oilRigs.expanded = action.payload;
-    },
     setRigsSortOrder: (oilRigs, action) => {
       oilRigs.sortOrder = action.payload;
     },
@@ -33,7 +29,6 @@ export const {
   oilRigsRequested,
   oilRigsReceived,
   oilRigsRequestFailed,
-  setRigsExpanded,
   setRigsSortOrder,
 } = slice.actions;
 export default slice.reducer;

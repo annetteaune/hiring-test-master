@@ -11,6 +11,7 @@ import {
   Icon,
   Loader,
   Spinner,
+  Spacer,
 } from "@oliasoft-open-source/react-ui-library";
 import { setSitesSortOrder, sitesLoaded } from "store/entities/sites/sites";
 import styles from "./sites.module.less";
@@ -49,73 +50,79 @@ const Sites = ({
   }, [list, sortOrder]);
 
   return (
-    <Card heading={<Heading>List of oil sites</Heading>}>
-      <Row>
-        <div className={styles.sitesList}>
-          <div className={styles.sortBtnContainer}>
-            <Button
-              label={<Icon icon="sort ascending" />}
-              onClick={() => setSitesSortOrder("asc")}
-            />
-            <Button
-              label={<Icon icon="sort descending" />}
-              onClick={() => setSitesSortOrder("desc")}
-            />
-            <Button
-              label={<Icon icon="undo" />}
-              onClick={() => setSitesSortOrder("none")}
-            />
-          </div>
-          {loading ? (
-            <Loader
-              height="100%"
-              testId="story-default-spinner"
-              text="Loading..."
-              theme="white"
-              width="100%"
-            >
-              <Spinner dark />
-            </Loader>
-          ) : list.length ? (
-            <ul>
-              <Flex
-                gap="var(--padding)"
-                justifyContent="space-evenly"
-                direction="column"
+    <div className={styles.listContainer}>
+      <Card heading={<Heading>List of oil sites</Heading>}>
+        <Row>
+          <div className={styles.sitesList}>
+            <div className={styles.sortBtnContainer}>
+              <Button
+                label={<Icon icon="sort ascending" />}
+                onClick={() => setSitesSortOrder("asc")}
+              />
+              <Button
+                label={<Icon icon="sort descending" />}
+                onClick={() => setSitesSortOrder("desc")}
+              />
+              <Button
+                label={<Icon icon="undo" />}
+                onClick={() => setSitesSortOrder("none")}
+              />
+            </div>
+            {loading ? (
+              <Loader
+                height="100%"
+                testId="story-default-spinner"
+                text="Loading..."
+                theme="white"
+                width="100%"
               >
-                {sortedList.map((site, i) => (
-                  <li key={i}>
-                    <Card
-                      bordered
-                      padding="true"
-                      heading={
-                        <Heading>
-                          {site.name} - {site.country}
-                        </Heading>
-                      }
-                    >
-                      <section className={styles.cardContent}>
-                        <OilRigs variant="compact" siteRigIds={site.oilRigs} />
-                      </section>
-                      <section className={styles.btnContainer}>
-                        <Button
-                          label="See details"
-                          onClick={() => handleDetailsClick(site.id)}
-                        />
-                      </section>
-                    </Card>
-                  </li>
-                ))}
-              </Flex>
-            </ul>
-          ) : (
-            <em>
-              <Icon icon="error" /> No data avaliable
-            </em>
-          )}
-        </div>
-      </Row>
-    </Card>
+                <Spinner dark />
+              </Loader>
+            ) : list.length ? (
+              <ul>
+                <Flex
+                  gap="var(--padding)"
+                  justifyContent="space-evenly"
+                  direction="column"
+                >
+                  {sortedList.map((site, i) => (
+                    <li key={i}>
+                      <Card
+                        bordered
+                        padding="true"
+                        heading={
+                          <Heading>
+                            {site.name} - {site.country}
+                          </Heading>
+                        }
+                      >
+                        <section className={styles.cardContent}>
+                          <OilRigs
+                            variant="compact"
+                            siteRigIds={site.oilRigs}
+                          />
+                        </section>
+                        <Spacer />
+                        <Flex justifyContent="center">
+                          <Button
+                            label="See details"
+                            onClick={() => handleDetailsClick(site.id)}
+                          />
+                        </Flex>
+                      </Card>
+                    </li>
+                  ))}
+                </Flex>
+              </ul>
+            ) : (
+              <em>
+                <Icon icon="error" /> No data avaliable
+              </em>
+            )}
+          </div>
+        </Row>
+      </Card>
+    </div>
   );
 };
 

@@ -1,15 +1,16 @@
-.sitesList {
-  max-width: 100%;
+.listContainer {
+  width: var(--container-width);
   margin: 0 auto;
-  padding: var(--padding);
 
-  ul {
-    list-style-type: none;
-    padding: 0;
+  .sitesList {
+    margin: 0 auto;
+    ul {
+      list-style-type: none;
+      padding: 0;
 
-    li {
-      width: 30%;
-      min-width: 450px;
+      li {
+        min-width: 30vw;
+      }
     }
   }
 }
@@ -20,12 +21,6 @@
   justify-content: center;
   max-height: 25vh;
   overflow: auto;
-}
-
-.btnContainer {
-  display: flex;
-  justify-content: center;
-  padding: var(--padding);
 }
 
 .sortBtnContainer {

@@ -7,12 +7,17 @@ import {
   Flex,
   Loader,
   Spinner,
+  Breadcrumb,
+  Card,
+  Row,
+  Column,
 } from "@oliasoft-open-source/react-ui-library";
 import { OilRigs } from "client/components/oil-rigs/oil-rigs";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { sitesLoaded } from "src/client/store/entities/sites/sites";
 import styles from "./details-page.module.less";
+import { oilRigs } from "src/server/oil-rigs/oil-rigs.db";
 
 export const DetailsPage = ({}) => {
   const { id } = useParams();
@@ -32,6 +37,9 @@ export const DetailsPage = ({}) => {
   const handleBackClick = () => {
     navigate("/");
   };
+
+  console.log("rigs ", currentSite.oilRigs);
+
   if (loading || !currentSite) {
     return (
       <Page>
@@ -49,17 +57,55 @@ export const DetailsPage = ({}) => {
   }
   return (
     <Page left={0}>
-      <Heading top>Details - {currentSite.name} </Heading>{" "}
-      <div className={styles.pageContainer}>
-        <section className={styles.infoContainer}>
-          <h2>{currentSite.name}</h2>
-          <p>{currentSite.country}</p>
-        </section>
-        <Button label="Back to site view" onClick={handleBackClick} />
-      </div>
-      <OilRigs siteRigIds={currentSite.oilRigs} />
+      <Flex justifyContent="space-between" alignItems="center">
+        <Breadcrumb
+          links={[
+            {
+              label: "Sites",
+              onClick: function Xs(navigate) {
+                handleBackClick();
+              },
+            },
+            {
+              active: true,
+              label: `Details - ${currentSite.name}`,
+              url: "sites/:id",
+            },
+          ]}
+        />
+        <Button label="Back to Sites" onClick={handleBackClick} />
+      </Flex>
+      <Spacer />
+      <Flex justifyContent="center">
+        <div style={{ width: "var(--container-width)" }}>
+          <Card bordered padding="true">
+            <Heading>Site Information</Heading>
+            <Row>
+              <Column width="150px">
+                <b>Site Name:</b>
+              </Column>
+              <Column>{currentSite.name}</Column>
+            </Row>
+            <Row>
+              <Column width="150px">
+                <b>Country:</b>
+              </Column>
+              <Column>{currentSite.country}</Column>
+            </Row>
+            <Row>
+              <Column width="150px">
+                <b>Number of Rigs:</b>
+              </Column>
+              <Column>{currentSite.oilRigs?.length || 0}</Column>
+            </Row>
+          </Card>
+        </div>
+      </Flex>
+      <Spacer />
+
+      <Flex justifyContent="center">
+        <OilRigs siteRigIds={currentSite.oilRigs} currentSite={currentSite} />
+      </Flex>
     </Page>
   );
 };
-
-// todo legg til breadcrumb, inkluder back-btn der?

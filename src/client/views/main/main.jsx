@@ -6,7 +6,7 @@ import { OilRigs } from "client/components/oil-rigs/oil-rigs";
 export const Main = ({}) => {
   return (
     <Page left={0}>
-      <Heading top>Hiring Challenge</Heading>
+      <Heading top>Sites Overview</Heading>
       <Sites />
     </Page>
   );

@@ -13,13 +13,14 @@ import {
   Divider,
   Loader,
   Spinner,
+  Flex,
 } from "@oliasoft-open-source/react-ui-library";
 import {
   oilRigsLoaded,
-  setRigsExpanded,
   setRigsSortOrder,
 } from "store/entities/oil-rigs/oil-rigs";
 import styles from "./oil-rigs.module.less";
+import { current } from "@reduxjs/toolkit";
 
 const OilRigs = ({
   list,
@@ -27,10 +28,9 @@ const OilRigs = ({
   oilRigsLoaded,
   variant = "full",
   siteRigIds,
-  expanded,
-  setRigsExpanded,
   sortOrder,
   setRigsSortOrder,
+  currentSite,
 }) => {
   console.log("rigs: ", list);
 
@@ -44,8 +44,10 @@ const OilRigs = ({
     }
   });
 
+  // uses local state instead of redux to avoid all accordions opening at once
+  const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
-    setRigsExpanded(!expanded);
+    setExpanded(!expanded);
   };
 
   const sortedList = useMemo(() => {
@@ -105,57 +107,60 @@ const OilRigs = ({
           </article>
         </>
       ) : (
-        <div className={styles.listContainer}>
-          <Card heading={<Heading>List of oil rigs</Heading>}>
-            <Row>
-              <Column>
-                {" "}
-                <div className={styles.sortBtnContainer}>
-                  <Button
-                    label={<Icon icon="sort ascending" />}
-                    onClick={() => setRigsSortOrder("asc")}
-                  />
-                  <Button
-                    label={<Icon icon="sort descending" />}
-                    onClick={() => setRigsSortOrder("desc")}
-                  />
-                  <Button
-                    label={<Icon icon="undo" />}
-                    onClick={() => setRigsSortOrder("none")}
-                  />
-                </div>
-                <article>
-                  {loading ? (
-                    <Loader
-                      height="100%"
-                      testId="story-default-spinner"
-                      text="Loading..."
-                      theme="white"
-                      width="100%"
-                    >
-                      <Spinner dark />
-                    </Loader>
-                  ) : sortedList.length ? (
-                    <List
-                      list={{
-                        items: sortedList.map((oilRig, index) => ({
-                          id: oilRig.id,
-                          name: oilRig.name,
-                          details: oilRig.manufacturer,
-                          metadata: `Rig ID: ${oilRig.id}`,
-                          testId: `oil-rig-item-${oilRig.id}`,
-                        })),
-                      }}
-                      noHeader
-                    />
-                  ) : (
-                    <em>
-                      <Icon icon="error" /> No data avaliable
-                    </em>
-                  )}
-                </article>
-              </Column>
-            </Row>
+        <div style={{ width: "var(--container-width)" }}>
+          <Card>
+            {" "}
+            <div className={styles.sortBtnContainer}>
+              <Button
+                label={<Icon icon="sort ascending" />}
+                onClick={() => setRigsSortOrder("asc")}
+              />
+              <Button
+                label={<Icon icon="sort descending" />}
+                onClick={() => setRigsSortOrder("desc")}
+              />
+              <Button
+                label={<Icon icon="undo" />}
+                onClick={() => setRigsSortOrder("none")}
+              />
+            </div>
+            <Card heading={<Heading>Oil Rigs at {currentSite.name}</Heading>}>
+              <Row>
+                <Column>
+                  {" "}
+                  <article>
+                    {loading ? (
+                      <Loader
+                        height="100%"
+                        testId="story-default-spinner"
+                        text="Loading..."
+                        theme="white"
+                        width="100%"
+                      >
+                        <Spinner dark />
+                      </Loader>
+                    ) : sortedList.length ? (
+                      <List
+                        list={{
+                          items: sortedList.map((oilRig, index) => ({
+                            id: oilRig.id,
+                            name: oilRig.name,
+                            details: oilRig.manufacturer,
+                            metadata: `Rig ID: ${oilRig.id}`,
+                            testId: `oil-rig-item-${oilRig.id}`,
+                          })),
+                        }}
+                        noHeader
+                      />
+                    ) : (
+                      <em>
+                        <Icon icon="error" /> No data avaliable
+                      </em>
+                    )}
+                  </article>
+                </Column>
+              </Row>
+            </Card>
           </Card>
         </div>
       )}
@@ -169,7 +174,6 @@ const mapStateToProps = ({ entities }) => {
   return {
     loading: oilRigs.loading,
     list: oilRigs.list,
-    expanded: oilRigs.expanded,
     sortOrder: oilRigs.sortOrder,
   };
 };
@@ -177,7 +181,6 @@ const mapStateToProps = ({ entities }) => {
 //gir tilgang til action
 const mapDispatchToProps = {
   oilRigsLoaded,
-  setRigsExpanded,
   setRigsSortOrder,
 };
 
