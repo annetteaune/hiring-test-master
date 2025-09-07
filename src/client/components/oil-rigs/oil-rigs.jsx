@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import {
-  Button,
   Card,
   Heading,
   Column,
@@ -10,9 +9,6 @@ import {
   List,
   Accordion,
   Icon,
-  Divider,
-  Loader,
-  Spinner,
   Flex,
 } from "@oliasoft-open-source/react-ui-library";
 import {
@@ -21,6 +17,9 @@ import {
 } from "store/entities/oil-rigs/oil-rigs";
 import styles from "./oil-rigs.module.less";
 import { current } from "@reduxjs/toolkit";
+import SortControls from "../common/sort-controls/sort-controls";
+import LoaderIndicator from "../common/loader-indicator/loader-indicator";
+import { useDataFetcher } from "src/client/hooks/useDataFetcher";
 
 const OilRigs = ({
   list,
@@ -32,17 +31,11 @@ const OilRigs = ({
   setRigsSortOrder,
   currentSite,
 }) => {
-  console.log("rigs: ", list);
-
   const filteredRigs = siteRigIds
     ? list.filter((rig) => siteRigIds.includes(rig.id))
     : list;
 
-  useEffect(() => {
-    if (list.length === 0 && !loading) {
-      oilRigsLoaded();
-    }
-  });
+  useDataFetcher(list, loading, oilRigsLoaded);
 
   // uses local state instead of redux to avoid all accordions opening at once
   const [expanded, setExpanded] = useState(false);
@@ -79,15 +72,7 @@ const OilRigs = ({
               }
             >
               {loading ? (
-                <Loader
-                  height="100%"
-                  testId="story-default-spinner"
-                  text="Loading..."
-                  theme="white"
-                  width="100%"
-                >
-                  <Spinner dark />
-                </Loader>
+                <LoaderIndicator />
               ) : filteredRigs.length ? (
                 <List
                   list={{
@@ -110,21 +95,10 @@ const OilRigs = ({
       ) : (
         <div style={{ width: "var(--container-width)" }}>
           <Card>
-            {" "}
-            <div className={styles.sortBtnContainer}>
-              <Button
-                label={<Icon icon="sort ascending" />}
-                onClick={() => setRigsSortOrder("asc")}
-              />
-              <Button
-                label={<Icon icon="sort descending" />}
-                onClick={() => setRigsSortOrder("desc")}
-              />
-              <Button
-                label={<Icon icon="undo" />}
-                onClick={() => setRigsSortOrder("none")}
-              />
-            </div>
+            <SortControls
+              sortOrder={setRigsSortOrder}
+              className={styles.sortBtnContainer}
+            />
             <Card
               heading={
                 <Heading>
@@ -139,15 +113,7 @@ const OilRigs = ({
                   {" "}
                   <article>
                     {loading ? (
-                      <Loader
-                        height="100%"
-                        testId="story-default-spinner"
-                        text="Loading..."
-                        theme="white"
-                        width="100%"
-                      >
-                        <Spinner dark />
-                      </Loader>
+                      <LoaderIndicator />
                     ) : sortedList.length ? (
                       <List
                         list={{
@@ -177,7 +143,6 @@ const OilRigs = ({
   );
 };
 
-//gir tilgang til verdien i sortOrder
 const mapStateToProps = ({ entities }) => {
   const { oilRigs } = entities;
   return {
@@ -187,7 +152,6 @@ const mapStateToProps = ({ entities }) => {
   };
 };
 
-//gir tilgang til action
 const mapDispatchToProps = {
   oilRigsLoaded,
   setRigsSortOrder,

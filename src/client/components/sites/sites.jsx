@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import {
   Button,
@@ -17,6 +17,9 @@ import { setSitesSortOrder, sitesLoaded } from "store/entities/sites/sites";
 import styles from "./sites.module.less";
 import { useNavigate } from "react-router-dom";
 import { OilRigs } from "../oil-rigs/oil-rigs";
+import SortControls from "../common/sort-controls/sort-controls";
+import LoaderIndicator from "../common/loader-indicator/loader-indicator";
+import { useDataFetcher } from "src/client/hooks/useDataFetcher";
 
 const Sites = ({
   list,
@@ -27,17 +30,11 @@ const Sites = ({
 }) => {
   const navigate = useNavigate();
 
-  // navigate to details page based on id
   const handleDetailsClick = (siteId) => {
     navigate(`/site/${siteId}`);
   };
 
-  console.log("list ", list);
-  useEffect(() => {
-    if (list.length === 0 && !loading) {
-      sitesLoaded();
-    }
-  });
+  useDataFetcher(list, loading, sitesLoaded);
 
   const sortedList = useMemo(() => {
     if (sortOrder === "asc") {
@@ -54,30 +51,12 @@ const Sites = ({
       <Card heading={<Heading>List of oil sites</Heading>}>
         <Row>
           <div className={styles.sitesList}>
-            <div className={styles.sortBtnContainer}>
-              <Button
-                label={<Icon icon="sort ascending" />}
-                onClick={() => setSitesSortOrder("asc")}
-              />
-              <Button
-                label={<Icon icon="sort descending" />}
-                onClick={() => setSitesSortOrder("desc")}
-              />
-              <Button
-                label={<Icon icon="undo" />}
-                onClick={() => setSitesSortOrder("none")}
-              />
-            </div>
+            <SortControls
+              sortOrder={setSitesSortOrder}
+              className={styles.sortBtnContainer}
+            />
             {loading ? (
-              <Loader
-                height="100%"
-                testId="story-default-spinner"
-                text="Loading..."
-                theme="white"
-                width="100%"
-              >
-                <Spinner dark />
-              </Loader>
+              <LoaderIndicator />
             ) : list.length ? (
               <ul>
                 <Flex

@@ -14,46 +14,32 @@ import { useSelector } from "react-redux";
 import {
   Page,
   Heading,
-  Button,
   Flex,
   Spacer,
   Card,
-  Breadcrumb,
 } from "@oliasoft-open-source/react-ui-library";
-import { useNavigate } from "react-router-dom";
+import PageHeader from "src/client/components/common/page-header/page-header";
 
 export const ChartView = () => {
-  const navigate = useNavigate();
   const { list: sites } = useSelector((state) => state.entities.sites);
+  const { list: oilRigs } = useSelector((state) => state.entities.oilRigs);
 
-  const chartData = sites.map((site) => ({
-    name: site.name,
-    oilRigs: site.oilRigs?.length || 0,
-  }));
+  const chartData = sites.map((site) => {
+    const validRigs =
+      site.oilRigs?.filter((rigId) =>
+        oilRigs.some((rig) => rig.id === rigId)
+      ) || [];
+
+    return {
+      name: site.name,
+      oilRigs: validRigs.length,
+    };
+  });
 
   return (
     <Page left={0}>
-      <Flex justifyContent="space-between" alignItems="center">
-        <Breadcrumb
-          links={[
-            {
-              label: "Sites",
-              onClick: function Xs(navigate) {
-                handleBackClick();
-              },
-            },
-            {
-              active: true,
-              label: `Charts`,
-              url: "sites/chart",
-            },
-          ]}
-        />
-        <Button label="Back to Sites" onClick={() => navigate("/")} />
-      </Flex>
-
+      <PageHeader currentPageLabel="Charts" currentPageUrl="sites/chart" />
       <Spacer />
-      {/* https://recharts.org/en-US/guide/customize https://recharts.org/en-US/storybook */}
       <Card>
         <Heading>Oil Rig Charts</Heading>
         <Flex justifyContent="center">
