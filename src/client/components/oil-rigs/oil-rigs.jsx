@@ -51,6 +51,7 @@ const OilRigs = ({
   };
 
   const sortedList = useMemo(() => {
+    if (!list || list.length === 0) return [];
     if (sortOrder === "asc") {
       return [...filteredRigs].sort((a, b) => a.name.localeCompare(b.name));
     }
@@ -124,7 +125,15 @@ const OilRigs = ({
                 onClick={() => setRigsSortOrder("none")}
               />
             </div>
-            <Card heading={<Heading>Oil Rigs at {currentSite.name}</Heading>}>
+            <Card
+              heading={
+                <Heading>
+                  {currentSite?.name
+                    ? `Oil Rigs at ${currentSite.name}`
+                    : "All Oil Rigs"}
+                </Heading>
+              }
+            >
               <Row>
                 <Column>
                   {" "}
