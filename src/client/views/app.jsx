@@ -1,11 +1,10 @@
-import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
 import { TopBar } from "@oliasoft-open-source/react-ui-library";
 import Logo from "client/views/images/logo.svg";
+import { Link, Route, Routes } from "react-router-dom";
 
 import { Main } from "client/views/main/main";
-import { DetailsPage } from "./details-page/details-page";
 import { ChartView } from "./chart-view/chart-view";
+import { DetailsPage } from "./details-page/details-page";
 import { RigsView } from "./rigs-view/rigs-view";
 
 export const App = () => {

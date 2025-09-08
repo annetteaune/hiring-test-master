@@ -1,25 +1,21 @@
-import React, { useMemo } from "react";
-import { connect } from "react-redux";
 import {
   Button,
   Card,
-  Heading,
-  Column,
-  Row,
   Flex,
-  List,
+  Heading,
   Icon,
-  Loader,
-  Spinner,
+  Row,
   Spacer,
 } from "@oliasoft-open-source/react-ui-library";
-import { setSitesSortOrder, sitesLoaded } from "store/entities/sites/sites";
-import styles from "./sites.module.less";
+import { useMemo } from "react";
+import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { OilRigs } from "../oil-rigs/oil-rigs";
-import SortControls from "../common/sort-controls/sort-controls";
-import LoaderIndicator from "../common/loader-indicator/loader-indicator";
 import { useDataFetcher } from "src/client/hooks/useDataFetcher";
+import { setSitesSortOrder, sitesLoaded } from "store/entities/sites/sites";
+import LoaderIndicator from "../common/loader-indicator/loader-indicator";
+import SortControls from "../common/sort-controls/sort-controls";
+import { OilRigs } from "../oil-rigs/oil-rigs";
+import styles from "./sites.module.less";
 
 const Sites = ({
   list,
@@ -47,7 +43,7 @@ const Sites = ({
   }, [list, sortOrder]);
 
   return (
-    <div className={styles.listContainer}>
+    <div className="wrapper">
       <Card heading={<Heading>List of oil sites</Heading>}>
         <Row>
           <div className={styles.sitesList}>
@@ -75,12 +71,12 @@ const Sites = ({
                           </Heading>
                         }
                       >
-                        <section className={styles.cardContent}>
+                        <Flex>
                           <OilRigs
                             variant="compact"
                             siteRigIds={site.oilRigs}
                           />
-                        </section>
+                        </Flex>
                         <Spacer />
                         <Flex justifyContent="center">
                           <Button
@@ -91,6 +87,7 @@ const Sites = ({
                       </Card>
                     </li>
                   ))}
+                  <Spacer />
                 </Flex>
               </ul>
             ) : (

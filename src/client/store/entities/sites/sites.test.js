@@ -1,14 +1,14 @@
-import sites, {sitesLoaded, sitesRequested} from './sites';
-import { configureAppStore }  from '../../configureStore';
+import sites, { sitesLoaded, sitesRequested } from "./sites";
+import { configureAppStore } from "../../configureStore";
 
-const hello = () => 'hello world test';
+const hello = () => "hello world test";
 
-describe('employees', () => {
+describe("employees", () => {
   let store;
   beforeEach(() => {
     store = configureAppStore();
     fetchMock.resetMocks();
-  })
+  });
 
   const sitesSlice = () => store.getState()?.entities?.sites;
 
@@ -16,20 +16,25 @@ describe('employees', () => {
     Hello world test
   */
 
-  test('hello world test', () => {
-    expect(hello()).toBe('hello world test');
+  test("hello world test", () => {
+    expect(hello()).toBe("hello world test");
   });
 
   /*
     Solitary reducer tests
   */
 
-  it('should handle initial state', () => {
-    expect(sites(undefined, {})).toEqual({list: [], loading: false})
+  it("should handle initial state", () => {
+    expect(sites(undefined, {})).toEqual({
+      list: [],
+      loading: false,
+      sortOrder: "none",
+    });
   });
 
-  it('should set loading when requested', () => {
-    expect(sites({list: [], loading: false}, sitesRequested()))
-      .toEqual({list: [], loading: true})
+  it("should set loading when requested", () => {
+    expect(
+      sites({ list: [], loading: false, sortOrder: "none" }, sitesRequested())
+    ).toEqual({ list: [], loading: true, sortOrder: "none" });
   });
 });

@@ -1,25 +1,22 @@
-import React, { useMemo, useState } from "react";
-import { connect } from "react-redux";
 import {
-  Card,
-  Heading,
-  Column,
-  Row,
-  Spacer,
-  List,
   Accordion,
+  Card,
+  Column,
+  Heading,
   Icon,
-  Flex,
+  List,
+  Row,
 } from "@oliasoft-open-source/react-ui-library";
+import { useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { useDataFetcher } from "src/client/hooks/useDataFetcher";
 import {
   oilRigsLoaded,
   setRigsSortOrder,
 } from "store/entities/oil-rigs/oil-rigs";
-import styles from "./oil-rigs.module.less";
-import { current } from "@reduxjs/toolkit";
-import SortControls from "../common/sort-controls/sort-controls";
 import LoaderIndicator from "../common/loader-indicator/loader-indicator";
-import { useDataFetcher } from "src/client/hooks/useDataFetcher";
+import SortControls from "../common/sort-controls/sort-controls";
+import styles from "./oil-rigs.module.less";
 
 const OilRigs = ({
   list,
@@ -62,13 +59,7 @@ const OilRigs = ({
             <Accordion
               expanded={expanded}
               heading={
-                <Heading
-                  onClick={function Xs(expanded) {
-                    toggleExpanded();
-                  }}
-                >
-                  Connected Oil Rigs
-                </Heading>
+                <Heading onClick={toggleExpanded}>Connected Oil Rigs</Heading>
               }
             >
               {loading ? (
@@ -93,7 +84,7 @@ const OilRigs = ({
           </article>
         </>
       ) : (
-        <div style={{ width: "var(--container-width)" }}>
+        <div className="wrapper">
           <Card>
             <SortControls
               sortOrder={setRigsSortOrder}
@@ -117,7 +108,7 @@ const OilRigs = ({
                     ) : sortedList.length ? (
                       <List
                         list={{
-                          items: sortedList.map((oilRig, index) => ({
+                          items: sortedList.map((oilRig) => ({
                             id: oilRig.id,
                             name: oilRig.name,
                             details: oilRig.manufacturer,

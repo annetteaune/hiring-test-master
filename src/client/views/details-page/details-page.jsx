@@ -1,31 +1,33 @@
-import React, { useEffect } from "react";
 import {
+  Card,
+  Column,
+  Flex,
   Heading,
   Page,
-  Spacer,
-  Flex,
-  Loader,
-  Spinner,
-  Card,
   Row,
-  Column,
+  Spacer,
 } from "@oliasoft-open-source/react-ui-library";
-import { OilRigs } from "client/components/oil-rigs/oil-rigs";
-import { useParams } from "react-router-dom";
+import { oilRigsLoaded } from "src/client/store/entities/oil-rigs/oil-rigs";
 import { useDispatch, useSelector } from "react-redux";
-import { sitesLoaded } from "src/client/store/entities/sites/sites";
-import styles from "./details-page.module.less";
-import { oilRigs } from "src/server/oil-rigs/oil-rigs.db";
+import { useParams } from "react-router-dom";
 import LoaderIndicator from "src/client/components/common/loader-indicator/loader-indicator";
 import PageHeader from "src/client/components/common/page-header/page-header";
 import { useDataFetcher } from "src/client/hooks/useDataFetcher";
+import { sitesLoaded } from "src/client/store/entities/sites/sites";
+import { OilRigs } from "client/components/oil-rigs/oil-rigs";
 
 export const DetailsPage = ({}) => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { list, loading } = useSelector((state) => state.entities.sites);
-  const currentSite = list.find((site) => site.id === id);
+  const { list: sites, loading: sitesLoading } = useSelector(
+    (state) => state.entities.sites
+  );
+  const { list: oilRigs, loading: oilRigsLoading } = useSelector(
+    (state) => state.entities.oilRigs
+  );
+
+  const currentSite = sites.find((site) => site.id === id);
 
   const validRigs =
     currentSite?.oilRigs?.filter((rigId) =>
@@ -34,10 +36,10 @@ export const DetailsPage = ({}) => {
 
   const validRigCount = validRigs.length;
 
-  // fetch data upon refresh/empty list
-  useDataFetcher(list, loading, () => dispatch(sitesLoaded()));
+  useDataFetcher(sites, sitesLoading, () => dispatch(sitesLoaded()));
+  useDataFetcher(oilRigs, oilRigsLoading, () => dispatch(oilRigsLoaded()));
 
-  if (loading || !currentSite) {
+  if (sitesLoading || oilRigsLoading || !currentSite) {
     return (
       <Page>
         <LoaderIndicator />

@@ -1,3 +1,14 @@
 :root {
   --container-width: 70%;
 }
+
+.wrapper {
+  width: var(--container-width);
+  margin: 0 auto;
+}
+
+@media (max-width: 1000px) {
+  .wrapper {
+    width: 100%;
+  }
+}

@@ -7,15 +7,6 @@ let oilRigsList = oilRigs.slice();
 export default class EmployeesController {
   constructor() {}
 
-  /*
-  200 OK
-  201 created 
-  400 bad request - mangler
-  404 not found
-  409 conflict - eksisterer
-  
-  */
-
   //Create
   addOilRig = (req, res) => {
     const { name, manufacturer } = req.body;

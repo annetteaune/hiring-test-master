@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { Flex, Page, Spacer } from "@oliasoft-open-source/react-ui-library";
 import { OilRigs } from "client/components/oil-rigs/oil-rigs";
 import PageHeader from "src/client/components/common/page-header/page-header";
